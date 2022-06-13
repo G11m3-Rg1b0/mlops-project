@@ -3,3 +3,4 @@
 remote
 /mlruns
 dvc.lock
+src/__pycahe__/
