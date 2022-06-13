@@ -1,0 +1,86 @@
+data_preparation: null
+data_splitting:
+  batch_size: 32
+  color_mode: rgb
+  image_size:
+  - 256
+  - 256
+  shuffle: true
+  train_seed: 0
+  valid_seed: 42
+  validation_split: 0.2
+data_train_preprocessing:
+- name: Rescaling
+  scale: 0.00392156862745098
+- mode: horizontal_and_vertical
+  name: RandomFlip
+- factor: 0.2
+  name: RandomRotation
+data_valid_preprocessing:
+- name: Rescaling
+  scale: 0.00392156862745098
+model_evaluation:
+  batch_size: 32
+  exp_id: '1'
+  run_id: 89753933977f42d6919e727bfd294ce7
+model_training:
+  compiler:
+    loss: sparse_categorical_crossentropy
+    metrics:
+    - accuracy
+    optimizer: RMSprop
+  experiment: exp_3d
+  input_shape:
+    image_height: 256
+    image_width: 256
+    n_channels: 3
+  model_cfg:
+  - activation: relu
+    filters: 32
+    kernel_size: 3
+    name: Conv2D
+    padding: same
+    strides: 2
+  - name: BatchNormalization
+  - name: MaxPooling2D
+    pool_size:
+    - 2
+    - 2
+  - name: BatchNormalization
+  - activation: relu
+    filters: 64
+    kernel_size: 3
+    name: Conv2D
+    padding: same
+    strides: 1
+  - name: BatchNormalization
+  - name: MaxPooling2D
+    pool_size:
+    - 2
+    - 2
+  - name: BatchNormalization
+  - activation: relu
+    filters: 128
+    kernel_size: 3
+    name: Conv2D
+    padding: same
+    strides: 1
+  - name: BatchNormalization
+  - name: MaxPooling2D
+    pool_size:
+    - 2
+    - 2
+  - name: BatchNormalization
+  - name: Flatten
+  - activation: relu
+    name: Dense
+    units: 256
+  - name: BatchNormalization
+  - name: Dropout
+    rate: 0.5
+  - activation: softmax
+    name: Dense
+    units: 10
+  training_cfg:
+    batch_size: 32
+    epochs: 1

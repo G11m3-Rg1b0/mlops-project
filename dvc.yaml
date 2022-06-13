@@ -1,0 +1,60 @@
+stages:
+  data_preparation:
+    cmd: py -m src.pipelines.data_preparation --config=params.yaml --input-dir=data\raw --output-dir=data\prepared
+    deps:
+      - src\pipelines\data_preparation.py
+      - data\raw
+    params:
+      - data_preparation
+    outs:
+      - data\prepared
+
+  data_splitting:
+    cmd: py -m src.pipelines.data_splitting --config=params.yaml --input-dir=data\prepared --output-dir=data\split
+    deps:
+      - src\pipelines\data_splitting.py
+      - data\prepared
+    params:
+      - data_splitting
+    outs:
+      - data\split
+
+  data_train_preprocessing:
+    cmd: py -m src.pipelines.data_train_preprocessing --config=params.yaml --input-dir=data\split --output-dir=data\preprocessed
+    deps:
+      - src\pipelines\data_train_preprocessing.py
+      - data\split\train
+    params:
+      - data_train_preprocessing
+    outs:
+      - data\preprocessed\train
+
+  data_valid_preprocessing:
+    cmd: py -m src.pipelines.data_valid_preprocessing --config=params.yaml --input-dir=data\split --output-dir=data\preprocessed
+    deps:
+      - src\pipelines\data_valid_preprocessing.py
+      - data\split\valid
+    params:
+      - data_valid_preprocessing
+    outs:
+      - data\preprocessed\valid
+
+  model_training:
+    cmd: py -m src.pipelines.model_training --config=params.yaml --input-dir=data\preprocessed --model-dir=mlruns
+    deps:
+      - src\pipelines\model_training.py
+      - data\preprocessed\train
+    params:
+      - model_training
+    outs:
+      - mlruns
+
+# don't need evaluation to be in the dag, don't really make sense
+  model_evaluation:
+    cmd: py -m src.pipelines.model_evaluation --config=params.yaml --input-dir=data\preprocessed --model-dir=mlruns
+    deps:
+      - src\pipelines\model_evaluation.py
+      - mlruns
+      - data\preprocessed\valid
+    params:
+      - model_evaluation
