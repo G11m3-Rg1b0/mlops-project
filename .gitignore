@@ -1,5 +1,6 @@
 .idea
+__pycache__/
 .venv
+
 remote
 /mlruns
-src/__pycahe__/

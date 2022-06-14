@@ -2,3 +2,7 @@
     remote = dvc-remote
 ['remote "dvc-remote"']
     url = ../remote/dvc-storage
+['remote "model-registry"']
+    url = ../remote/dvc-storage/models
+['remote "data-registry"']
+    url = ../remote/dvc-storage/data

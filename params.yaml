@@ -22,7 +22,7 @@ data_valid_preprocessing:
 model_evaluation:
   batch_size: 32
   exp_id: '1'
-  run_id: 89753933977f42d6919e727bfd294ce7
+  run_id: a83129fb4cf943468f33fcdd8bc4b3f5
 model_training:
   compiler:
     loss: sparse_categorical_crossentropy
@@ -83,4 +83,4 @@ model_training:
     units: 10
   training_cfg:
     batch_size: 32
-    epochs: 1
+    epochs: 2

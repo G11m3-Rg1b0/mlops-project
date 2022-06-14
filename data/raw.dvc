@@ -3,3 +3,4 @@ outs:
   size: 412284
   nfiles: 50
   path: raw
+  remote: data-registry
