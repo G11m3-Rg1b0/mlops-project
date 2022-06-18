@@ -2,7 +2,7 @@
 Script to run data preparation.
 """
 import os
-from src.data.prepare import FileSysManager, PngFormatter
+from src.data.prepare import *
 from src.pipeline import Pipeline
 from src.parser import PipeParser
 from pathlib import Path
@@ -21,9 +21,10 @@ class DataPreparation(Pipeline):
         for file_name in os.listdir(self.input_dir):
             file_path = os.path.join(self.input_dir, file_name)
 
-            output_path = FileSysManager().build_output_path(file_path, self.output_dir)
+            output_path = PrepFileSysManager().build_output_path(file_path, self.output_dir)
 
-            data_handler = PngFormatter()
+            data_handler = eval(self.config['data_formatter'] + '()')
+
             spectrogram = data_handler.build_spectrogram(file_path)
             data_handler.save(spectrogram, output_path)
 

@@ -7,15 +7,15 @@ from PIL import Image
 import numpy as np
 import io
 from pathlib import Path
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
 import librosa
 
 
-class FileSysManager:
+class PrepFileSysManager:
     """Get the output directory of the prepared file."""
 
-    def build_output_path(self, file_path: str, output_data_dir: Path) -> str:
+    def build_output_path(self, file_path: str, output_data_dir: str) -> str:
         """Build the path to save prepared data.
 
         args:
@@ -46,7 +46,7 @@ class FileSysManager:
         return re.search(r'\d+(?=_)', file_name).group(0)
 
 
-class DataFormatter(metaclass=ABCMeta):
+class DataFormatter(ABC):
     """Abstract class to convert audio files into their spectrogram in a particular format."""
 
     @abstractmethod
