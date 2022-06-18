@@ -1,0 +1,7 @@
+base:
+  dir_raw_data: data\raw
+  dir_prepared_data: data\prepared
+  dir_split_data: data\split
+  dir_preprocessed_data: data\preprocessed
+
+  local_model_registry: mlruns

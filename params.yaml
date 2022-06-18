@@ -21,15 +21,15 @@ data_valid_preprocessing:
   scale: 0.00392156862745098
 model_evaluation:
   batch_size: 32
-  exp_id: '1'
-  run_id: a83129fb4cf943468f33fcdd8bc4b3f5
+  exp_id: '8'
+  run_id: 33addfe5357e4560861d3fcabbdff28f
 model_training:
   compiler:
     loss: sparse_categorical_crossentropy
     metrics:
     - accuracy
     optimizer: RMSprop
-  experiment: exp_3d
+  experiment: exp-1
   input_shape:
     image_height: 256
     image_width: 256
@@ -81,6 +81,7 @@ model_training:
   - activation: softmax
     name: Dense
     units: 10
+  run_name: smthg
   training_cfg:
     batch_size: 32
     epochs: 2

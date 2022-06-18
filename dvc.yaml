@@ -1,66 +1,69 @@
+vars:
+  - configs/base_cfg.yaml:base
+
 stages:
   data_preparation:
-    cmd: py -m src.pipelines.data_preparation --config=params.yaml --input-dir=data\raw --output-dir=data\prepared
+    cmd: py -m src.pipelines.data_preparation --config=params.yaml --input-dir=${base.dir_raw_data} --output-dir=${base.dir_prepared_data}
     deps:
       - src\pipelines\data_preparation.py
-      - data\raw
+      - ${base.dir_raw_data}
     params:
       - data_preparation
     outs:
-      - data\prepared:
+      - ${base.dir_prepared_data}:
           remote: data-registry
 
   data_splitting:
-    cmd: py -m src.pipelines.data_splitting --config=params.yaml --input-dir=data\prepared --output-dir=data\split
+    cmd: py -m src.pipelines.data_splitting --config=params.yaml --input-dir=${base.dir_prepared_data} --output-dir=${base.dir_split_data}
     deps:
       - src\pipelines\data_splitting.py
-      - data\prepared
+      - ${base.dir_prepared_data}
     params:
       - data_splitting
     outs:
-      - data\split:
+      - ${base.dir_split_data}:
           remote: data-registry
 
   data_train_preprocessing:
-    cmd: py -m src.pipelines.data_train_preprocessing --config=params.yaml --input-dir=data\split --output-dir=data\preprocessed
+    cmd: py -m src.pipelines.data_train_preprocessing --config=params.yaml --input-dir=${base.dir_split_data} --output-dir=${base.dir_preprocessed_data}
     deps:
       - src\pipelines\data_train_preprocessing.py
-      - data\split\train
+      - ${base.dir_split_data}\train
     params:
       - data_train_preprocessing
     outs:
-      - data\preprocessed\train:
+      - ${base.dir_preprocessed_data}\train:
           remote: data-registry
 
   data_valid_preprocessing:
-    cmd: py -m src.pipelines.data_valid_preprocessing --config=params.yaml --input-dir=data\split --output-dir=data\preprocessed
+    cmd: py -m src.pipelines.data_valid_preprocessing --config=params.yaml --input-dir=${base.dir_split_data} --output-dir=${base.dir_preprocessed_data}
     deps:
       - src\pipelines\data_valid_preprocessing.py
-      - data\split\valid
+      - ${base.dir_split_data}\valid
     params:
       - data_valid_preprocessing
     outs:
-      - data\preprocessed\valid:
+      - ${base.dir_preprocessed_data}\valid:
           remote: data-registry
 
   model_training:
-    cmd: py -m src.pipelines.model_training --config=params.yaml --input-dir=data\preprocessed --model-dir=mlruns
+    cmd: py -m src.pipelines.model_training --config=params.yaml --input-dir=${base.dir_preprocessed_data} --model-dir=${base.local_model_registry}
     deps:
       - src\pipelines\model_training.py
-      - data\preprocessed\train
+      - ${base.dir_preprocessed_data}\train
     params:
       - model_training
     outs:
-      - mlruns:
+      - ${base.local_model_registry}:
           persist: true
           remote: model-registry
 
 # don't need evaluation to be in the dag, don't really make sense
   model_evaluation:
-    cmd: py -m src.pipelines.model_evaluation --config=params.yaml --input-dir=data\preprocessed --model-dir=mlruns
+    cmd: py -m src.pipelines.model_evaluation --config=params.yaml --input-dir=${base.dir_preprocessed_data} --model-dir=${base.local_model_registry}
     deps:
       - src\pipelines\model_evaluation.py
-      - mlruns
-      - data\preprocessed\valid
+      - ${base.local_model_registry}
+      - ${base.dir_preprocessed_data}\valid
     params:
       - model_evaluation
