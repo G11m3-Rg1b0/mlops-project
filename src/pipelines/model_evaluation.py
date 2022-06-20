@@ -5,7 +5,7 @@ from pathlib import Path
 from src.model.model import CNNModel
 from src.pipeline import Pipeline
 from src.parser import PipeParser
-from src.utils import DataManager
+from src.utils import DatasetManager
 
 
 class ModelEvaluation(Pipeline):
@@ -19,7 +19,7 @@ class ModelEvaluation(Pipeline):
         print(f'evaluate run: {self.config["run_id"]}')
         print(f'use data from: {self.input_dir or "default directory"}')
 
-        valid_dataset = DataManager.load_data_category('valid', self.input_dir)
+        valid_dataset = DatasetManager.load_data(os.path.join(self.input_dir, 'valid'))
         model = self.load_model()
 
         outputs = model.evaluate(valid_dataset, verbose=1, batch_size=self.config['batch_size'])

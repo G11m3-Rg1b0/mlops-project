@@ -21,7 +21,9 @@ class TransformFactory:
         return globals()[name](kwargs)
 
 
-#### official keras transformations ####
+########################################
+#    official keras transformations    #
+########################################
 
 class KerasTransformation(tf.keras.Sequential, AbstractTransform):
     """Keras transformation."""

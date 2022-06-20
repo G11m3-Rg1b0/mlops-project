@@ -1,9 +1,10 @@
 """"
 Script to run the preprocessing pipeline
 """
+import os
 from pathlib import Path
 from src.data.preprocessing import TransformFactory
-from src.utils import DataManager
+from src.utils import DatasetManager
 from src.pipeline import Pipeline
 from src.parser import PipeParser
 
@@ -19,7 +20,7 @@ class DataValidPreprocessing(Pipeline):
         print('preprocessing data ...')
 
         # todo: batchsize is not consistent with loading function ?
-        valid_dataset = DataManager.load_data_category('valid', self.input_dir)
+        valid_dataset = DatasetManager.load_data(os.path.join(self.input_dir, 'valid'))
 
         # preprocess valid dataset
         for cfg in self.config:
@@ -30,7 +31,7 @@ class DataValidPreprocessing(Pipeline):
             valid_dataset = transformation.apply_transform(valid_dataset)
 
         # save data
-        DataManager.save_data_category(valid_dataset, 'valid', path=self.output_dir)
+        DatasetManager.save_data(valid_dataset, data_dir=os.path.join(self.output_dir, 'valid'))
 
 
 if __name__ == '__main__':

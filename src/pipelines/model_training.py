@@ -1,9 +1,10 @@
 import mlflow
 from pathlib import Path
 import yaml
+import os
 
 from src.model.model import CNNModel
-from src.utils import DataManager
+from src.utils import DatasetManager
 from src.pipeline import Pipeline
 from src.parser import PipeParser
 
@@ -30,8 +31,8 @@ class ModelTraining(Pipeline):
         )
 
         # load data for training
-        valid_dataset = DataManager.load_data_category('valid', self.input_dir)
-        train_dataset = DataManager.load_data_category('train', self.input_dir)
+        valid_dataset = DatasetManager.load_data(os.path.join(self.input_dir, 'valid'))
+        train_dataset = DatasetManager.load_data(os.path.join(self.input_dir, 'train'))
 
         # mlflow setup
         # todo:

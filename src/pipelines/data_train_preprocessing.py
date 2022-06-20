@@ -1,9 +1,10 @@
 """"
 Script to run the preprocessing pipeline
 """
+import os
 from pathlib import Path
 from src.data.preprocessing import TransformFactory
-from src.utils import DataManager
+from src.utils import DatasetManager
 from src.pipeline import Pipeline
 from src.parser import PipeParser
 
@@ -18,7 +19,7 @@ class DataTrainPreprocessing(Pipeline):
     def run(self) -> None:
         print('preprocessing data ...')
 
-        train_dataset = DataManager.load_data_category('train', self.input_dir)
+        train_dataset = DatasetManager.load_data(os.path.join(self.input_dir, 'train'))
 
         # preprocess train dataset
         for cfg in self.config:
@@ -29,7 +30,7 @@ class DataTrainPreprocessing(Pipeline):
             train_dataset = transformation.apply_transform(train_dataset)
 
         # save data
-        DataManager.save_data_category(train_dataset, 'train', path=self.output_dir)
+        DatasetManager.save_data(train_dataset, data_dir=os.path.join(self.output_dir, 'train'))
 
 
 if __name__ == '__main__':

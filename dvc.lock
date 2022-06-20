@@ -9,11 +9,12 @@ stages:
       size: 412284
       nfiles: 50
     - path: src\pipelines\data_preparation.py
-      md5: ec85488bc3dddf943d225f8af760db7e
-      size: 1184
+      md5: 23f4cce320b2feb2c6daf6b6c7b6b077
+      size: 1191
     params:
       params.yaml:
         data_preparation:
+          data_formatter: PngFormatter
     outs:
     - path: data\prepared
       md5: 72bcb1e643859ea2c62bcd12c9eb9c27.dir
@@ -28,8 +29,8 @@ stages:
       size: 7645904
       nfiles: 50
     - path: src\pipelines\data_splitting.py
-      md5: 15f4530fb01c9153f3d8db87847dbded
-      size: 1668
+      md5: 81add19d0ef66cd3e3f1a3ac85f830d8
+      size: 1657
     params:
       params.yaml:
         data_splitting:
@@ -44,7 +45,7 @@ stages:
           validation_split: 0.2
     outs:
     - path: data\split
-      md5: 8aed1e6585d58056f7b897e2bf6ac40c.dir
+      md5: 395cbb600ecc3fd46e6d6331c3186b0d.dir
       size: 39322213
       nfiles: 6
   data_valid_preprocessing:
@@ -52,12 +53,12 @@ stages:
       --output-dir=data\preprocessed
     deps:
     - path: data\split\valid
-      md5: a6cf57bb22459e575868fec10e80f8da.dir
+      md5: f35ce97e2cc024451d700adcf345d8a0.dir
       size: 7864531
       nfiles: 3
     - path: src\pipelines\data_valid_preprocessing.py
-      md5: 4e9223e54235c9d08bfc3dec6c8777de
-      size: 1393
+      md5: 02db1ad375755223ed20a5ba23ea63d1
+      size: 1427
     params:
       params.yaml:
         data_valid_preprocessing:
@@ -65,20 +66,20 @@ stages:
           scale: 0.00392156862745098
     outs:
     - path: data\preprocessed\valid
-      md5: c295482a900d279ae2675090110c305f.dir
-      size: 7864531
+      md5: e31ef31f4e56404a9845dcbf9d701dc0.dir
+      size: 7864532
       nfiles: 3
   data_train_preprocessing:
     cmd: py -m src.pipelines.data_train_preprocessing --config=params.yaml --input-dir=data\split
       --output-dir=data\preprocessed
     deps:
     - path: data\split\train
-      md5: 13b48db0986bd94339c9336d71994e9b.dir
+      md5: 19937bd91e05e231447db7201735a95d.dir
       size: 31457682
       nfiles: 3
     - path: src\pipelines\data_train_preprocessing.py
-      md5: 61b8581b80f6fd00d56d3bca2e46e06a
-      size: 1324
+      md5: 5a0b11afd9d85e4c663c5c3eb3e205fd
+      size: 1358
     params:
       params.yaml:
         data_train_preprocessing:
@@ -90,20 +91,20 @@ stages:
           name: RandomRotation
     outs:
     - path: data\preprocessed\train
-      md5: 741f3b450cdb61c33454225c7550d4ed.dir
-      size: 31457681
+      md5: 274a4bda970e8162fba8770fdb07eeca.dir
+      size: 31457682
       nfiles: 3
   model_training:
     cmd: py -m src.pipelines.model_training --config=params.yaml --input-dir=data\preprocessed
       --model-dir=mlruns
     deps:
     - path: data\preprocessed\train
-      md5: 741f3b450cdb61c33454225c7550d4ed.dir
-      size: 31457681
+      md5: 274a4bda970e8162fba8770fdb07eeca.dir
+      size: 31457682
       nfiles: 3
     - path: src\pipelines\model_training.py
-      md5: a7ac7ccecdead6f41cbb14e0296ed865
-      size: 2956
+      md5: 57d65ffcd4d2e6ace96ed8e92ac210f6
+      size: 2986
     params:
       params.yaml:
         model_training:
@@ -112,7 +113,7 @@ stages:
             metrics:
             - accuracy
             optimizer: RMSprop
-          experiment: exp_3d
+          experiment: exp-1
           input_shape:
             image_height: 256
             image_width: 256
@@ -164,32 +165,40 @@ stages:
           - activation: softmax
             name: Dense
             units: 10
+          run_name: smthg
           training_cfg:
             batch_size: 32
             epochs: 2
     outs:
     - path: mlruns
-      md5: aa9d8fcd993865cefbe5189a586b5290.dir
-      size: 136693923
-      nfiles: 82
+      md5: 3a6492da97f13d0dbfa8301060ca6502.dir
+      size: 751819609
+      nfiles: 481
   model_evaluation:
     cmd: py -m src.pipelines.model_evaluation --config=params.yaml --input-dir=data\preprocessed
       --model-dir=mlruns
     deps:
     - path: data\preprocessed\valid
-      md5: c295482a900d279ae2675090110c305f.dir
-      size: 7864531
+      md5: e31ef31f4e56404a9845dcbf9d701dc0.dir
+      size: 7864532
       nfiles: 3
     - path: mlruns
-      md5: aa9d8fcd993865cefbe5189a586b5290.dir
-      size: 136693923
-      nfiles: 82
+      md5: 3a6492da97f13d0dbfa8301060ca6502.dir
+      size: 751819609
+      nfiles: 481
     - path: src\pipelines\model_evaluation.py
-      md5: 608c7d3f412f666ce47a5757cb30e608
-      size: 1571
+      md5: a543f76d23c6f18dfec8b6eb08317522
+      size: 1582
     params:
       params.yaml:
         model_evaluation:
           batch_size: 32
-          exp_id: '1'
-          run_id: a83129fb4cf943468f33fcdd8bc4b3f5
+          exp_id: '8'
+          run_id: 7bc6bfd9ce574288842b4f3981009909
+  test_op:
+    cmd: echo smthg to print again
+    deps:
+    - path: data\raw
+      md5: 63aecd37950ec75d992549d925068acd.dir
+      size: 412284
+      nfiles: 50

@@ -7,7 +7,7 @@ from pathlib import Path
 from src.pipeline import Pipeline
 from src.parser import PipeParser
 
-from src.utils import DataManager
+from src.utils import DatasetManager
 
 
 class DataSplitting(Pipeline):
@@ -39,9 +39,8 @@ class DataSplitting(Pipeline):
         )
 
         # save data
-        data_manager = DataManager
-        data_manager.save_data_category(train_dataset, 'train', path=self.output_dir)
-        data_manager.save_data_category(valid_dataset, 'valid', path=self.output_dir)
+        DatasetManager.save_data(train_dataset, data_dir=os.path.join(self.output_dir, 'train'))
+        DatasetManager.save_data(valid_dataset, data_dir=os.path.join(self.output_dir, 'valid'))
 
 
 if __name__ == '__main__':
