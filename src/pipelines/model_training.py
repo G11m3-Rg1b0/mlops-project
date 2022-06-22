@@ -8,6 +8,8 @@ from src.utils import DatasetManager
 from src.pipeline import Pipeline
 from src.parser import PipeParser
 
+# quiet tensorflow warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 class ModelTraining(Pipeline):
     def __init__(self, config_path: Path, input_dir: Path, output_dir: Path):
@@ -40,7 +42,7 @@ class ModelTraining(Pipeline):
         #   lop_params to track the version of the data used during the training
 
         mlflow.keras.autolog()
-        mlflow.set_tracking_uri(self.output_dir)
+        mlflow.set_tracking_uri('http://localhost:5000')
 
         experiment = mlflow.get_experiment_by_name(self.config['experiment'])
         if experiment:
@@ -50,7 +52,7 @@ class ModelTraining(Pipeline):
 
         # train model
         print('training model ...')
-        with mlflow.start_run(run_name="something", experiment_id=mlflow_exp_id) as mlflow_run:
+        with mlflow.start_run(run_name=self.config['run_name'], experiment_id=mlflow_exp_id) as mlflow_run:
             mlflow_run_id = mlflow_run.info.run_id
             print(f'run id: {mlflow_run_id}')
             mlflow_exp_id = mlflow_run.info.experiment_id

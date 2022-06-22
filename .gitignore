@@ -1,6 +1,9 @@
 .idea
-*/__pycache__/
+__pycache__/
 .venv
+.env
 
 remote
 /mlruns
+
+pgdb_log
