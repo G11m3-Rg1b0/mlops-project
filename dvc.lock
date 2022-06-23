@@ -45,7 +45,7 @@ stages:
           validation_split: 0.2
     outs:
     - path: data\split
-      md5: 395cbb600ecc3fd46e6d6331c3186b0d.dir
+      md5: ac632ddb3d7dc7e8815109c62d78d9ed.dir
       size: 39322213
       nfiles: 6
   data_valid_preprocessing:
@@ -53,8 +53,8 @@ stages:
       --output-dir=data\preprocessed
     deps:
     - path: data\split\valid
-      md5: f35ce97e2cc024451d700adcf345d8a0.dir
-      size: 7864531
+      md5: 66b92f833260c3869c1bad750e43258c.dir
+      size: 7864532
       nfiles: 3
     - path: src\pipelines\data_valid_preprocessing.py
       md5: 02db1ad375755223ed20a5ba23ea63d1
@@ -66,16 +66,16 @@ stages:
           scale: 0.00392156862745098
     outs:
     - path: data\preprocessed\valid
-      md5: e31ef31f4e56404a9845dcbf9d701dc0.dir
-      size: 7864532
+      md5: de2d2643d66b510e48de053a5c9986d5.dir
+      size: 7864531
       nfiles: 3
   data_train_preprocessing:
     cmd: py -m src.pipelines.data_train_preprocessing --config=params.yaml --input-dir=data\split
       --output-dir=data\preprocessed
     deps:
     - path: data\split\train
-      md5: 19937bd91e05e231447db7201735a95d.dir
-      size: 31457682
+      md5: e78e2c7afb2da4a9733568fb9812a5f4.dir
+      size: 31457681
       nfiles: 3
     - path: src\pipelines\data_train_preprocessing.py
       md5: 5a0b11afd9d85e4c663c5c3eb3e205fd
@@ -91,7 +91,7 @@ stages:
           name: RandomRotation
     outs:
     - path: data\preprocessed\train
-      md5: 274a4bda970e8162fba8770fdb07eeca.dir
+      md5: 30c9927e8cf4b841ce2a2bb88fb24f50.dir
       size: 31457682
       nfiles: 3
   model_training:
@@ -99,21 +99,22 @@ stages:
       --model-dir=mlruns
     deps:
     - path: data\preprocessed\train
-      md5: 274a4bda970e8162fba8770fdb07eeca.dir
+      md5: 30c9927e8cf4b841ce2a2bb88fb24f50.dir
       size: 31457682
       nfiles: 3
     - path: src\pipelines\model_training.py
-      md5: 57d65ffcd4d2e6ace96ed8e92ac210f6
-      size: 2986
+      md5: ace355d5434705f6704f450955b992bc
+      size: 1926
     params:
       params.yaml:
         model_training:
+          experiment: new-exp-test-5
+          run_name: a_name
           compiler:
             loss: sparse_categorical_crossentropy
             metrics:
             - accuracy
             optimizer: RMSprop
-          experiment: exp-1
           input_shape:
             image_height: 256
             image_width: 256
@@ -165,40 +166,35 @@ stages:
           - activation: softmax
             name: Dense
             units: 10
-          run_name: smthg
           training_cfg:
             batch_size: 32
-            epochs: 2
+            epochs: 1
     outs:
     - path: mlruns
-      md5: 3a6492da97f13d0dbfa8301060ca6502.dir
-      size: 751819609
-      nfiles: 481
+      md5: 9f241c40f4bc5273793084b8234879d2.dir
+      size: 410074721
+      nfiles: 77
   model_evaluation:
     cmd: py -m src.pipelines.model_evaluation --config=params.yaml --input-dir=data\preprocessed
       --model-dir=mlruns
     deps:
     - path: data\preprocessed\valid
-      md5: e31ef31f4e56404a9845dcbf9d701dc0.dir
-      size: 7864532
+      md5: de2d2643d66b510e48de053a5c9986d5.dir
+      size: 7864531
       nfiles: 3
     - path: mlruns
-      md5: 3a6492da97f13d0dbfa8301060ca6502.dir
-      size: 751819609
-      nfiles: 481
+      md5: 9f241c40f4bc5273793084b8234879d2.dir
+      size: 410074721
+      nfiles: 77
     - path: src\pipelines\model_evaluation.py
-      md5: a543f76d23c6f18dfec8b6eb08317522
-      size: 1582
+      md5: b5d9a537d7ee68fe3da914bfe9685af2
+      size: 1261
     params:
       params.yaml:
         model_evaluation:
           batch_size: 32
-          exp_id: '8'
-          run_id: 7bc6bfd9ce574288842b4f3981009909
-  test_op:
-    cmd: echo smthg to print again
-    deps:
-    - path: data\raw
-      md5: 63aecd37950ec75d992549d925068acd.dir
-      size: 412284
-      nfiles: 50
+          exp_id: '2'
+          run_id: 42de438ba55745ba94f3974fcd268167
+      configs/mlflow_last_run.yaml:
+        experiment_id: '6'
+        run_id: de7a4048131e4a9a809b2acbc6bcc4cc

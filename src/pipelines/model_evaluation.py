@@ -6,6 +6,10 @@ from src.model.model import CNNModel
 from src.pipeline import Pipeline
 from src.parser import PipeParser
 from src.utils import DatasetManager
+from src.mlflow_utils import load_model
+
+# quiet tensorflow warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 class ModelEvaluation(Pipeline):
@@ -16,27 +20,16 @@ class ModelEvaluation(Pipeline):
         self.model_dir = model_dir
 
     def run(self) -> None:
-        print(f'evaluate run: {self.config["run_id"]}')
         print(f'use data from: {self.input_dir or "default directory"}')
 
         valid_dataset = DatasetManager.load_data(os.path.join(self.input_dir, 'valid'))
-        model = self.load_model()
+        model = load_model()
 
         outputs = model.evaluate(valid_dataset, verbose=1, batch_size=self.config['batch_size'])
 
         names = model.metrics_names
         for v, n in zip(outputs, names):
             print('{}: {:.6f}'.format(n, v))
-
-    def load_model(self) -> CNNModel:
-        """Load the model from the default mlflow model registry.
-
-        return:
-            The mlflow saved model.
-        """
-        path_to_model = os.path.join(self.model_dir, self.config['exp_id'], self.config['run_id'],
-                                     'artifacts', 'model')
-        return mlflow.keras.load_model(path_to_model)
 
 
 if __name__ == '__main__':

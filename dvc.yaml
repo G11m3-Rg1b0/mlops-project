@@ -58,7 +58,6 @@ stages:
           persist: true
           remote: model-registry
 
-# don't need evaluation to be in the dag, don't really make sense
   model_evaluation:
     cmd: py -m src.pipelines.model_evaluation --config=params.yaml --input-dir=${base.dir_preprocessed_data} --model-dir=${base.local_model_registry}
     deps:
@@ -67,3 +66,6 @@ stages:
       - ${base.dir_preprocessed_data}\valid
     params:
       - model_evaluation
+      - configs\mlflow_last_run.yaml:
+          - experiment_id
+          - run_id
