@@ -6,4 +6,4 @@ __pycache__/
 remote
 /mlruns
 
-pgdb_log
+/logs

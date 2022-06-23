@@ -3,7 +3,7 @@
 FOR /F "tokens=* delims=" %%x in (.env) DO set %%x
 
 :: start PostgreSQL server
-pg_ctl -l pgdb_logfile start
+pg_ctl -l logs/pgdb_logfile start
 
 :: wait until ready !infinite loop
 echo wait until server is ready ...
@@ -14,4 +14,5 @@ pg_isready -U %POSTGRES_USER% -d %POSTGRES_DB% | find "accepting connections" ||
 :: start MLflow server
 mlflow server ^
     --backend-store-uri postgresql://%POSTGRES_USER%:%POSTGRES_PASSWORD%@localhost:%POSTGRES_PORT%/%POSTGRES_DB% ^
-    --default-artifact-root file://"%CD%"/mlruns
+    --default-artifact-root ./mlruns ^
+    || pg_ctl stop
