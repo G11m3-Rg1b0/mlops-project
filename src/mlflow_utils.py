@@ -1,6 +1,7 @@
 import mlflow
 import yaml
 import os
+import dvc.api
 
 from src.model.model import CNNModel
 
@@ -9,17 +10,16 @@ from src.model.model import CNNModel
 with open(os.path.join('configs', 'base_cfg.yaml'), 'r') as fp_cfg:
     base_config = yaml.safe_load(fp_cfg)
 
-model_dir = base_config['base']['local_model_registry']
-
 with open('params.yaml', 'r') as fp_p:
-    dvc_config = yaml.safe_load(fp_p)
+    params_config = yaml.safe_load(fp_p)
 
-experiment_name = dvc_config['model_training']['experiment']
-run_name = dvc_config['model_training']['run_name']
-
+model_dir = base_config['base']['local_model_registry']
+data_train_dir = os.path.join(base_config['base']['dir_preprocessed_data'], 'train')
 # path to save info about last mlflow run
-path_info = os.path.join('configs', 'mlflow_last_run.yaml')
+path_info = base_config['base']['mlflow_last_run']
 
+experiment_name = params_config['model_training']['experiment']
+run_name = params_config['model_training']['run_name']
 
 #####
 
@@ -59,8 +59,7 @@ def mlflow_wrapper(func):
         else:
             exp_id = experiment.experiment_id
 
-        with mlflow.start_run(run_name=run_name,
-                              experiment_id=exp_id) as run:
+        with mlflow.start_run(run_name=run_name, experiment_id=exp_id) as run:
             # Display some information
             artifact_uri_ = mlflow.get_artifact_uri()
             tracking_uri_ = mlflow.get_tracking_uri()
@@ -71,6 +70,10 @@ def mlflow_wrapper(func):
             print(f'exp id: {exp_id}')
 
             func(*args, **kwargs)
+
+            # add data url to logs
+            data_url = dvc.api.get_url(data_train_dir, remote='data-registry')
+            mlflow.log_param('data_url', data_url)
 
             save_run_info(run_id, exp_id)
 

@@ -5,3 +5,4 @@ base:
   dir_preprocessed_data: data\preprocessed
 
   local_model_registry: mlruns
+  mlflow_last_run: configs\mlflow_last_run.yaml
