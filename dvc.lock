@@ -103,8 +103,8 @@ stages:
       size: 31457682
       nfiles: 3
     - path: src\pipelines\model_training.py
-      md5: ace355d5434705f6704f450955b992bc
-      size: 1926
+      md5: ed35952f6b93fd9bc8ed2979b1237457
+      size: 1759
     params:
       params.yaml:
         model_training:
@@ -171,9 +171,9 @@ stages:
             epochs: 1
     outs:
     - path: mlruns
-      md5: 9f241c40f4bc5273793084b8234879d2.dir
-      size: 410074721
-      nfiles: 77
+      md5: 09b0cff40c17be5385df2f0993cd2973.dir
+      size: 478420289
+      nfiles: 88
   model_evaluation:
     cmd: py -m src.pipelines.model_evaluation --config=params.yaml --input-dir=data\preprocessed
       --model-dir=mlruns
@@ -183,18 +183,16 @@ stages:
       size: 7864531
       nfiles: 3
     - path: mlruns
-      md5: 9f241c40f4bc5273793084b8234879d2.dir
-      size: 410074721
-      nfiles: 77
+      md5: 09b0cff40c17be5385df2f0993cd2973.dir
+      size: 478420289
+      nfiles: 88
     - path: src\pipelines\model_evaluation.py
-      md5: b5d9a537d7ee68fe3da914bfe9685af2
-      size: 1261
+      md5: 477e47b8996f4825031217d1baab61b3
+      size: 1242
     params:
       params.yaml:
         model_evaluation:
           batch_size: 32
-          exp_id: '2'
-          run_id: 42de438ba55745ba94f3974fcd268167
       configs/mlflow_last_run.yaml:
         experiment_id: '6'
-        run_id: de7a4048131e4a9a809b2acbc6bcc4cc
+        run_id: bfaac6f8828b4e66b9d5f84122fe8f5a
