@@ -10,7 +10,7 @@ echo host 	all 			all 			0.0.0.0/0				trust >> %PGDATA%/pg_hba.conf
 echo port=%POSTGRES_PORT% >> %PGDATA%/postgresql.conf
 
 :: start cluster
-pg_ctl -l ../pgdb_logfile start
+pg_ctl -l pgdb_logfile start
 
 :: initialize mlflow database
 echo CREATE DATABASE %POSTGRES_DB%; >> init_db.sql

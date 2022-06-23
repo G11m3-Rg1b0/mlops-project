@@ -3,7 +3,7 @@
 FOR /F "tokens=* delims=" %%x in (.env) DO set %%x
 
 :: start PostgreSQL server
-pg_ctl start
+pg_ctl -l pgdb_logfile start
 
 :: wait until ready !infinite loop
 echo wait until server is ready ...
