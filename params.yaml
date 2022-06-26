@@ -11,15 +11,17 @@ data_splitting:
   valid_seed: 42
   validation_split: 0.2
 data_train_preprocessing:
-- name: Rescaling
-  scale: 0.00392156862745098
-- mode: horizontal_and_vertical
-  name: RandomFlip
-- factor: 0.2
-  name: RandomRotation
+  transformations:
+  - name: Rescaling
+    scale: 0.00392156862745098
+  - mode: horizontal_and_vertical
+    name: RandomFlip
+  - factor: 0.2
+    name: RandomRotation
 data_valid_preprocessing:
-- name: Rescaling
-  scale: 0.00392156862745098
+  transformations:
+  - name: Rescaling
+    scale: 0.00392156862745098
 model_evaluation:
   batch_size: 32
 model_training:

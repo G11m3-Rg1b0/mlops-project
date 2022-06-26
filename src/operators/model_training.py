@@ -1,12 +1,10 @@
-import mlflow
 from pathlib import Path
-import yaml
 import os
 
 from src.model.model import CNNModel
-from src.utils import DatasetManager
-from src.pipeline import Pipeline
-from src.parser import PipeParser
+from src.utils import DatasetManager, check_config
+from src.operator import Operator
+from src.parser import OpParser
 
 from src.mlflow_utils import mlflow_wrapper
 
@@ -14,10 +12,22 @@ from src.mlflow_utils import mlflow_wrapper
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
-class ModelTraining(Pipeline):
+class ModelTraining(Operator):
+    needed_params = [
+        'experiment',
+        'model_cfg',
+        'compiler',
+        ('input_shape', 'image_height'),
+        ('input_shape', 'image_width'),
+        ('input_shape', 'n_channels'),
+        ('training_cfg', 'epochs'),
+        ('training_cfg', 'batch_size'),
+    ]
+
     def __init__(self, config_path: Path, input_dir: Path, output_dir: Path):
         self.config_path = config_path
-        self.config = self.load_pipeline_config(config_path, 'model_training')
+        self.config = self.load_operator_config(config_path, 'model_training')
+        check_config(self.config, self.needed_params)
 
         self.input_dir = input_dir
         self.output_dir = output_dir
@@ -50,8 +60,8 @@ class ModelTraining(Pipeline):
 
 
 if __name__ == '__main__':
-    pipe_parser = PipeParser()
-    args = pipe_parser.parse_args()
+    op_parser = OpParser()
+    args = op_parser.parse_args()
 
     training = ModelTraining(args.config, args.input_dir, args.model_dir)
     training.run()

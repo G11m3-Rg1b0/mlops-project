@@ -1,18 +1,21 @@
-"""
-Script to split prepared data.
-"""
 import os
 import tensorflow as tf
 from pathlib import Path
-from src.pipeline import Pipeline
-from src.parser import PipeParser
+from src.operator import Operator
+from src.parser import OpParser
 
-from src.utils import DatasetManager
+from src.utils import DatasetManager, check_config
 
 
-class DataSplitting(Pipeline):
+class DataSplitting(Operator):
+    needed_params = [
+        'train_seed',
+        'valid_seed'
+    ]
+
     def __init__(self, config_path: Path, input_dir: Path, output_dir: Path):
-        self.config = self.load_pipeline_config(config_path, 'data_splitting')
+        self.config = self.load_operator_config(config_path, 'data_splitting')
+        check_config(self.config, self.needed_params)
 
         self.input_dir = input_dir
         self.output_dir = output_dir
@@ -44,8 +47,8 @@ class DataSplitting(Pipeline):
 
 
 if __name__ == '__main__':
-    pipe_parser = PipeParser()
-    args = pipe_parser.parse_args()
+    op_parser = OpParser()
+    args = op_parser.parse_args()
 
     splitting = DataSplitting(args.config, args.input_dir, args.output_dir)
     splitting.run()

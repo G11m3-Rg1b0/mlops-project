@@ -1,16 +1,16 @@
 schema: '2.0'
 stages:
   data_preparation:
-    cmd: py -m src.pipelines.data_preparation --config=params.yaml --input-dir=data\raw
+    cmd: py -m src.operators.data_preparation --config=params.yaml --input-dir=data\raw
       --output-dir=data\prepared
     deps:
     - path: data\raw
       md5: 63aecd37950ec75d992549d925068acd.dir
       size: 412284
       nfiles: 50
-    - path: src\pipelines\data_preparation.py
-      md5: 23f4cce320b2feb2c6daf6b6c7b6b077
-      size: 1191
+    - path: src\operators\data_preparation.py
+      md5: c4cdf8ffd005ed1ca9c0a705b3910c02
+      size: 1428
     params:
       params.yaml:
         data_preparation:
@@ -21,16 +21,16 @@ stages:
       size: 7645904
       nfiles: 50
   data_splitting:
-    cmd: py -m src.pipelines.data_splitting --config=params.yaml --input-dir=data\prepared
+    cmd: py -m src.operators.data_splitting --config=params.yaml --input-dir=data\prepared
       --output-dir=data\split
     deps:
     - path: data\prepared
       md5: 72bcb1e643859ea2c62bcd12c9eb9c27.dir
       size: 7645904
       nfiles: 50
-    - path: src\pipelines\data_splitting.py
-      md5: 81add19d0ef66cd3e3f1a3ac85f830d8
-      size: 1657
+    - path: src\operators\data_splitting.py
+      md5: cbaa52f909473ab0a66de449edc519d9
+      size: 1753
     params:
       params.yaml:
         data_splitting:
@@ -45,66 +45,68 @@ stages:
           validation_split: 0.2
     outs:
     - path: data\split
-      md5: ac632ddb3d7dc7e8815109c62d78d9ed.dir
-      size: 39322213
+      md5: c0a6909f57b4b6b31418d8b775dbbed4.dir
+      size: 39322214
       nfiles: 6
   data_valid_preprocessing:
-    cmd: py -m src.pipelines.data_valid_preprocessing --config=params.yaml --input-dir=data\split
+    cmd: py -m src.operators.data_valid_preprocessing --config=params.yaml --input-dir=data\split
       --output-dir=data\preprocessed
     deps:
     - path: data\split\valid
-      md5: 66b92f833260c3869c1bad750e43258c.dir
+      md5: 8409ca8787d1cf4ec3b7e0b9db0ed256.dir
       size: 7864532
       nfiles: 3
-    - path: src\pipelines\data_valid_preprocessing.py
-      md5: 02db1ad375755223ed20a5ba23ea63d1
-      size: 1427
+    - path: src\operators\data_valid_preprocessing.py
+      md5: 945d6b62b1644940a775cac0ff8d9cdc
+      size: 1611
     params:
       params.yaml:
         data_valid_preprocessing:
-        - name: Rescaling
-          scale: 0.00392156862745098
+          transformations:
+          - name: Rescaling
+            scale: 0.00392156862745098
     outs:
     - path: data\preprocessed\valid
-      md5: de2d2643d66b510e48de053a5c9986d5.dir
+      md5: e8a13ccb4a09a602a97ee8953a854d50.dir
       size: 7864531
       nfiles: 3
   data_train_preprocessing:
-    cmd: py -m src.pipelines.data_train_preprocessing --config=params.yaml --input-dir=data\split
+    cmd: py -m src.operators.data_train_preprocessing --config=params.yaml --input-dir=data\split
       --output-dir=data\preprocessed
     deps:
     - path: data\split\train
-      md5: e78e2c7afb2da4a9733568fb9812a5f4.dir
-      size: 31457681
+      md5: 9e2aa12ec9764bd85a7eb9af877cb523.dir
+      size: 31457682
       nfiles: 3
-    - path: src\pipelines\data_train_preprocessing.py
-      md5: 5a0b11afd9d85e4c663c5c3eb3e205fd
-      size: 1358
+    - path: src\operators\data_train_preprocessing.py
+      md5: a847225ed5a39a52af3d417ee41a78ab
+      size: 1548
     params:
       params.yaml:
         data_train_preprocessing:
-        - name: Rescaling
-          scale: 0.00392156862745098
-        - mode: horizontal_and_vertical
-          name: RandomFlip
-        - factor: 0.2
-          name: RandomRotation
+          transformations:
+          - name: Rescaling
+            scale: 0.00392156862745098
+          - mode: horizontal_and_vertical
+            name: RandomFlip
+          - factor: 0.2
+            name: RandomRotation
     outs:
     - path: data\preprocessed\train
-      md5: 30c9927e8cf4b841ce2a2bb88fb24f50.dir
+      md5: 429857677a45364df03b639505d608eb.dir
       size: 31457682
       nfiles: 3
   model_training:
-    cmd: py -m src.pipelines.model_training --config=params.yaml --input-dir=data\preprocessed
+    cmd: py -m src.operators.model_training --config=params.yaml --input-dir=data\preprocessed
       --model-dir=mlruns
     deps:
     - path: data\preprocessed\train
-      md5: 30c9927e8cf4b841ce2a2bb88fb24f50.dir
+      md5: 429857677a45364df03b639505d608eb.dir
       size: 31457682
       nfiles: 3
-    - path: src\pipelines\model_training.py
-      md5: ed35952f6b93fd9bc8ed2979b1237457
-      size: 1759
+    - path: src\operators\model_training.py
+      md5: 06ae063fb4d6890aba3863b3fc84f46a
+      size: 2091
     params:
       params.yaml:
         model_training:
@@ -171,28 +173,28 @@ stages:
             epochs: 1
     outs:
     - path: mlruns
-      md5: 09b0cff40c17be5385df2f0993cd2973.dir
-      size: 478420289
-      nfiles: 88
+      md5: 6179b2a25c69f7ab79f34ad3ccf8fb7c.dir
+      size: 615111425
+      nfiles: 110
   model_evaluation:
-    cmd: py -m src.pipelines.model_evaluation --config=params.yaml --input-dir=data\preprocessed
+    cmd: py -m src.operators.model_evaluation --config=params.yaml --input-dir=data\preprocessed
       --model-dir=mlruns
     deps:
     - path: data\preprocessed\valid
-      md5: de2d2643d66b510e48de053a5c9986d5.dir
+      md5: e8a13ccb4a09a602a97ee8953a854d50.dir
       size: 7864531
       nfiles: 3
     - path: mlruns
-      md5: 09b0cff40c17be5385df2f0993cd2973.dir
-      size: 478420289
-      nfiles: 88
-    - path: src\pipelines\model_evaluation.py
-      md5: 477e47b8996f4825031217d1baab61b3
-      size: 1242
+      md5: 6179b2a25c69f7ab79f34ad3ccf8fb7c.dir
+      size: 615111425
+      nfiles: 110
+    - path: src\operators\model_evaluation.py
+      md5: 760a502f0dd19da6c3cfda178c654212
+      size: 1306
     params:
       params.yaml:
         model_evaluation:
           batch_size: 32
       configs/mlflow_last_run.yaml:
         experiment_id: '6'
-        run_id: bfaac6f8828b4e66b9d5f84122fe8f5a
+        run_id: e3725d688c6248d680de593a21f8ba51

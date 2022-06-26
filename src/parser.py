@@ -12,11 +12,11 @@ class PathAction(argparse.Action):
         setattr(namespace, self.dest, Path(values))
 
 
-class PipeParser(argparse.ArgumentParser):
+class OpParser(argparse.ArgumentParser):
 
     def __init__(self):
         super().__init__()
-        self.add_argument('--config', type=str, help="config's path for pipeline", action=PathAction)
-        self.add_argument('--input-dir', type=str, help="pipeline's input data directory", action=PathAction)
-        self.add_argument('--output-dir', type=str, help="pipeline's output data directory", action=PathAction)
+        self.add_argument('--config', type=str, help="config's path for operator", action=PathAction)
+        self.add_argument('--input-dir', type=str, help="operator's input data directory", action=PathAction)
+        self.add_argument('--output-dir', type=str, help="operator's output data directory", action=PathAction)
         self.add_argument('--model-dir', type=str, help="model directory", action=PathAction)
