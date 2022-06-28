@@ -63,7 +63,7 @@ def check_data_formatter(data_formatter: str) -> None:
     raises:
         AssertionError if the formatter doesn't exist.
     """
-    assert hasattr(prepare, data_formatter), f'The formatter {data_formatter} does not exist'
+    assert hasattr(prepare, data_formatter), f"The formatter '{data_formatter}' does not exist"
 
 
 def check_transformations(transformations):
@@ -77,4 +77,4 @@ def check_transformations(transformations):
         AssertionError if the transformation doesn't exist.
     """
     for transform in transformations:
-        assert hasattr(preprocessing, transform['name']), f'The transformation {transform["name"]} does not exist'
+        assert hasattr(preprocessing, transform['name']), f"The transformation '{transform['name']}' does not exist"

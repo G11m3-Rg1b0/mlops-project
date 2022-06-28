@@ -32,7 +32,7 @@ class Operator(AbstractOperator, ABC):
             config = yaml.safe_load(fp)
         return config[name]
 
-# todo revise that !!
+# todo revise that
 #     @abstractmethod
 #     def run(self) -> None:
 #         raise NotImplementedError()

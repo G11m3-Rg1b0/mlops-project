@@ -23,13 +23,15 @@ class DataPreparation(Operator):
     def run(self) -> None:
         print('preparing data ...')
 
+        file_manager = prepare.PrepFileSysManager()
+        data_handler = getattr(prepare, self.config['data_formatter'])()
+
         for file_name in os.listdir(self.input_dir):
+            if not file_name.endswith('.wav'):
+                continue
             file_path = os.path.join(self.input_dir, file_name)
 
-            file_manager = prepare.PrepFileSysManager()
             output_path = file_manager.build_output_path(file_path, self.output_dir)
-
-            data_handler = getattr(prepare, self.config['data_formatter'])()
             spectrogram = data_handler.build_spectrogram(file_path)
 
             data_handler.save(spectrogram, output_path)
