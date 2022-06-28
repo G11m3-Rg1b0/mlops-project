@@ -16,7 +16,7 @@ class TransformFactory:
 
     @staticmethod
     def create(name: str, kwargs: dict) -> AbstractTransform:
-        assert name in globals(), "Unknown transformation %s".format(name)
+        assert name in globals(), f"Unknown transformation '{name}'"
         # not good for debugging
         return globals()[name](kwargs)
 
