@@ -16,7 +16,7 @@ class OpParser(argparse.ArgumentParser):
 
     def __init__(self):
         super().__init__()
-        self.add_argument('--config', type=str, help="config's path for operator", action=PathAction)
+        self.add_argument('--config-path', type=str, help="operator's config's path", action=PathAction)
         self.add_argument('--input-dir', type=str, help="operator's input data directory", action=PathAction)
         self.add_argument('--output-dir', type=str, help="operator's output data directory", action=PathAction)
         self.add_argument('--model-dir', type=str, help="model directory", action=PathAction)

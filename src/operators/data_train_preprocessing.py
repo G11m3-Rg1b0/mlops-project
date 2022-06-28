@@ -40,5 +40,5 @@ if __name__ == '__main__':
     op_parser = OpParser()
     args = op_parser.parse_args()
 
-    preprocessing = DataTrainPreprocessing(args.config, args.input_dir, args.output_dir)
+    preprocessing = DataTrainPreprocessing(args.config_path, args.input_dir, args.output_dir)
     preprocessing.run()

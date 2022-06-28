@@ -41,5 +41,5 @@ if __name__ == '__main__':
     op_parser = OpParser()
     args = op_parser.parse_args()
 
-    preprocessing = DataValidPreprocessing(args.config, args.input_dir, args.output_dir)
+    preprocessing = DataValidPreprocessing(args.config_path, args.input_dir, args.output_dir)
     preprocessing.run()

@@ -41,7 +41,7 @@ if __name__ == '__main__':
     op_parser = OpParser()
     args = op_parser.parse_args()
 
-    preparation = DataPreparation(args.config, args.input_dir, args.output_dir)
+    preparation = DataPreparation(args.config_path, args.input_dir, args.output_dir)
     preparation.run()
 
     print('data preparation finished')

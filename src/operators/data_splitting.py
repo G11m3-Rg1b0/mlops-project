@@ -50,5 +50,5 @@ if __name__ == '__main__':
     op_parser = OpParser()
     args = op_parser.parse_args()
 
-    splitting = DataSplitting(args.config, args.input_dir, args.output_dir)
+    splitting = DataSplitting(args.config_path_path, args.input_dir, args.output_dir)
     splitting.run()

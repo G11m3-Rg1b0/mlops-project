@@ -3,7 +3,7 @@ vars:
 
 stages:
   data_preparation:
-    cmd: py -m src.operators.data_preparation --config=params.yaml --input-dir=${base.dir_raw_data} --output-dir=${base.dir_prepared_data}
+    cmd: py -m src.operators.data_preparation --config-path=params.yaml --input-dir=${base.dir_raw_data} --output-dir=${base.dir_prepared_data}
     deps:
       - src\operators\data_preparation.py
       - ${base.dir_raw_data}
@@ -14,7 +14,7 @@ stages:
           remote: data-registry
 
   data_splitting:
-    cmd: py -m src.operators.data_splitting --config=params.yaml --input-dir=${base.dir_prepared_data} --output-dir=${base.dir_split_data}
+    cmd: py -m src.operators.data_splitting --config-path=params.yaml --input-dir=${base.dir_prepared_data} --output-dir=${base.dir_split_data}
     deps:
       - src\operators\data_splitting.py
       - ${base.dir_prepared_data}
@@ -25,7 +25,7 @@ stages:
           remote: data-registry
 
   data_train_preprocessing:
-    cmd: py -m src.operators.data_train_preprocessing --config=params.yaml --input-dir=${base.dir_split_data} --output-dir=${base.dir_preprocessed_data}
+    cmd: py -m src.operators.data_train_preprocessing --config-path=params.yaml --input-dir=${base.dir_split_data} --output-dir=${base.dir_preprocessed_data}
     deps:
       - src\operators\data_train_preprocessing.py
       - ${base.dir_split_data}\train
@@ -36,7 +36,7 @@ stages:
           remote: data-registry
 
   data_valid_preprocessing:
-    cmd: py -m src.operators.data_valid_preprocessing --config=params.yaml --input-dir=${base.dir_split_data} --output-dir=${base.dir_preprocessed_data}
+    cmd: py -m src.operators.data_valid_preprocessing --config-path=params.yaml --input-dir=${base.dir_split_data} --output-dir=${base.dir_preprocessed_data}
     deps:
       - src\operators\data_valid_preprocessing.py
       - ${base.dir_split_data}\valid
@@ -47,7 +47,7 @@ stages:
           remote: data-registry
 
   model_training:
-    cmd: py -m src.operators.model_training --config=params.yaml --input-dir=${base.dir_preprocessed_data} --model-dir=${base.local_model_registry}
+    cmd: py -m src.operators.model_training --config-path=params.yaml --input-dir=${base.dir_preprocessed_data} --model-dir=${base.local_model_registry}
     deps:
       - src\operators\model_training.py
       - ${base.dir_preprocessed_data}\train
@@ -59,7 +59,7 @@ stages:
           remote: model-registry
 
   model_evaluation:
-    cmd: py -m src.operators.model_evaluation --config=params.yaml --input-dir=${base.dir_preprocessed_data} --model-dir=${base.local_model_registry}
+    cmd: py -m src.operators.model_evaluation --config-path=params.yaml --input-dir=${base.dir_preprocessed_data} --model-dir=${base.local_model_registry}
     deps:
       - src\operators\model_evaluation.py
       - ${base.local_model_registry}

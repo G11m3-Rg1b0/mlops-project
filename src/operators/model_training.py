@@ -63,5 +63,5 @@ if __name__ == '__main__':
     op_parser = OpParser()
     args = op_parser.parse_args()
 
-    training = ModelTraining(args.config, args.input_dir, args.model_dir)
+    training = ModelTraining(args.config_path, args.input_dir, args.model_dir)
     training.run()
