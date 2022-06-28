@@ -38,17 +38,35 @@ class DatasetManager:
         return tf.data.experimental.load(data_dir)
 
 
-def get_base_config():
+def get_base_config() -> dict:
+    """Load the base config of the project in 'configs/base_cfg.yaml' and return the 'base'.
+    """
     base_config_path = os.path.join('configs', 'base_cfg.yaml')
+    assert os.path.exists(base_config_path), f"path to base config '{base_config_path}' does not exists"
     with open(base_config_path, 'r') as fp:
         base_config = yaml.safe_load(fp)
     return base_config['base']
 
 
-def get_params_config():
+def get_params_config() -> dict:
+    """Load dvc's parameter file 'params.yaml'.
+    """
+    assert os.path.exists('params.yaml'), f"'params.yaml' does not exists"
     with open('params.yaml', 'r') as fp_p:
         params_config = yaml.safe_load(fp_p)
     return params_config
+
+
+def get_path_to_last_model() -> str:
+    """Get the saving path of the last model run with mlflow.
+    """
+    base_cfg = get_base_config()
+    info_path = base_cfg['mlflow_last_run_info']
+
+    assert os.path.exists(info_path), f"can't gather information from last run, {info_path} does not exist"
+    with open(info_path, 'r') as fp:
+        last_run = yaml.safe_load(fp)
+    return os.path.join(last_run['artifact_uri'], 'model')
 
 
 def mlflow_keras_load_model() -> CNNModel:
@@ -57,12 +75,9 @@ def mlflow_keras_load_model() -> CNNModel:
     return:
         The last mlflow saved model.
     """
-    base_cfg = get_base_config()
-    run_info_path = base_cfg['mlflow_last_run_info']
-    with open(run_info_path, 'r') as fp:
-        last_run = yaml.safe_load(fp)
+    path_to_model = get_path_to_last_model()
+    assert os.path.exists(path_to_model), f"the model you looking for does not exit in local directory {path_to_model}"
 
-    path_to_model = os.path.join(last_run['artifact_uri'], 'model')
     return mlflow.keras.load_model(path_to_model)
 
 
