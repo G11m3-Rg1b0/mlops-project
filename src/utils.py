@@ -1,7 +1,12 @@
 import tensorflow as tf
 from typing import List
+import yaml
+import mlflow
+import os
+
 from src.data import prepare
 from src.data import preprocessing
+from src.model.model import CNNModel
 
 
 class DatasetManager:
@@ -32,6 +37,52 @@ class DatasetManager:
         """
         return tf.data.experimental.load(data_dir)
 
+
+def get_base_config():
+    base_config_path = os.path.join('configs', 'base_cfg.yaml')
+    with open(base_config_path, 'r') as fp:
+        base_config = yaml.safe_load(fp)
+    return base_config['base']
+
+
+def get_params_config():
+    with open('params.yaml', 'r') as fp_p:
+        params_config = yaml.safe_load(fp_p)
+    return params_config
+
+
+def mlflow_keras_load_model() -> CNNModel:
+    """Load the last model from the default mlflow model registry.
+
+    return:
+        The last mlflow saved model.
+    """
+    base_cfg = get_base_config()
+    run_info_path = base_cfg['mlflow_last_run_info']
+    with open(run_info_path, 'r') as fp:
+        last_run = yaml.safe_load(fp)
+
+    path_to_model = os.path.join(last_run['artifact_uri'], 'model')
+    return mlflow.keras.load_model(path_to_model)
+
+
+def save_run_info(run_id: str, exp_id: str, artifact_uri: str) -> None:
+    """Update 'mlflow_last_run_info' configuration file with experiment id, training run id and artifact uri for
+    upcoming evaluations.
+    """
+    base_cfg = get_base_config()
+    run_info_path = base_cfg['mlflow_last_run_info']
+
+    info = {
+        'run_id':        run_id,
+        'experiment_id': exp_id,
+        'artifact_uri':  artifact_uri
+    }
+    with open(run_info_path, 'w') as fp:
+        yaml.safe_dump(info, fp)
+
+
+### Checks ###
 
 def check_config(config: dict, needed_keys: List[tuple or str]) -> None:
     """Test for checking that the operator get all the configuration it needs to run properly.

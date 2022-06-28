@@ -66,6 +66,7 @@ stages:
       - ${base.dir_preprocessed_data}\valid
     params:
       - model_evaluation
-      - configs\mlflow_last_run.yaml:
+      - configs\mlflow_last_run_info.yaml:
           - experiment_id
           - run_id
+          - artifact_uri

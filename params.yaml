@@ -43,6 +43,7 @@ model_training:
     metrics:
     - accuracy
     optimizer: RMSprop
+
   input_shape:
     image_height: 256
     image_width: 256

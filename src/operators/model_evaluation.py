@@ -1,10 +1,9 @@
 import os
 from pathlib import Path
 
-from src import mlflow_utils
 from src.operator import Operator
 from src.parser import OpParser
-from src.utils import DatasetManager, check_config
+from src.utils import DatasetManager, check_config, mlflow_keras_load_model
 
 # quiet tensorflow warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -26,7 +25,7 @@ class ModelEvaluation(Operator):
         print(f'use data from: {self.input_dir or "default directory"}')
 
         valid_dataset = DatasetManager.load_data(os.path.join(self.input_dir, 'valid'))
-        model = mlflow_utils.load_model()
+        model = mlflow_keras_load_model()
 
         outputs = model.evaluate(valid_dataset, verbose=1, batch_size=self.config['batch_size'])
 

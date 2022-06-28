@@ -6,7 +6,7 @@ from src.utils import DatasetManager, check_config
 from src.operator import Operator
 from src.parser import OpParser
 
-from src.mlflow_utils import mlflow_wrapper
+from src.mlflow_decorator import mlflow_run
 
 # quiet tensorflow warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -32,7 +32,7 @@ class ModelTraining(Operator):
         self.input_dir = input_dir
         self.output_dir = output_dir
 
-    @mlflow_wrapper
+    @mlflow_run
     def run(self):
         print('building model ...')
 
