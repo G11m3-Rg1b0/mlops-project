@@ -1,68 +1,71 @@
-import unittest
-from pathlib import Path
+import pytest
 import os
 
-from src.pipelines.model_training import ModelTraining
 from src.model.model import CNNModel
 
 # quiet tensorflow warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
-class ModelTest(unittest.TestCase):
-
-    def test_model_train_config_is_loaded_properly(self):
-        needed_keys = [
-            'experiment',
-            'model_cfg',
-            'compiler',
-            ('input_shape', 'image_height'),
-            ('input_shape', 'image_width'),
-            ('input_shape', 'n_channels'),
-            ('training_cfg', 'epochs'),
-            ('training_cfg', 'batch_size'),
-        ]
-
-        cfg = ModelTraining(
-            config_path=Path('params.yaml'),
-            input_dir=Path(''),
-            output_dir=Path(''),
-        ).config
-
-        self.assertIsNot(cfg, None, 'no config loaded')
-        for nk in needed_keys:
-            if isinstance(nk, tuple):
-                self.assertIn(nk[1], cfg[nk[0]].keys(), f'missing parameter "{nk}" in config')
-                continue
-            self.assertIn(nk, cfg.keys(), f'missing parameter "{nk}" in config')
-
-    def test_model_initialization(self):
-        mock_cfg = [
-            {
-                'name':        'Conv2D',
-                'filters':     32,
-                'kernel_size': 3
-            },
-            {
-                'name': 'BatchNormalization'
-            }
-        ]
-
-        model = CNNModel(mock_cfg)
-
-        self.assertIsInstance(model, CNNModel, 'error initializing CNNModel')
-
-    def test_wrong_kwarg_to_layer(self):
-        mock_cfg = [
-            {
-                'name': 'Conv2D',
-                'wrong_param': 'value'
-            },
-            {
-                'name': 'BatchNormalization'
-            }
-        ]
-        self.assertRaises(TypeError, CNNModel, mock_cfg, 'did not catch the name of the layer')
+@pytest.fixture
+def layer_name():
+    return 'Conv2D'
 
 
-        # build a model with a custom layer ?
+@pytest.fixture
+def filters():
+    return 32
+
+
+@pytest.fixture
+def kernel_size():
+    return 3, 3
+
+
+@pytest.fixture
+def wright_config(layer_name, filters, kernel_size):
+    return [
+        {
+            'name':        layer_name,
+            'filters':     filters,
+            'kernel_size': kernel_size
+        },
+        {
+            'name': 'BatchNormalization'
+        }
+    ]
+
+
+@pytest.fixture
+def wrong_config():
+    return [
+        {
+            'name':        'Conv2D',
+            'wrong_param': 'value'
+        },
+        {
+            'name': 'BatchNormalization'
+        }
+    ]
+
+
+def test_model_initialization(wright_config, layer_name, filters, kernel_size):
+    config_layers = [layer['name'] for layer in wright_config]
+    config_layers.sort()
+
+    model = CNNModel(wright_config)
+    assert isinstance(model, CNNModel)
+
+    model_layers = [layer.__class__.__name__ for layer in model.layers]
+    model_layers.sort()
+    assert config_layers == model_layers
+
+    conv2d_model_params = model.get_layer(layer_name.lower()).get_config()
+    assert filters == conv2d_model_params['filters'] and kernel_size == conv2d_model_params['kernel_size']
+
+
+def test_wrong_kwarg_to_layer(wrong_config):
+    with pytest.raises(Exception):
+        CNNModel(wrong_config)
+
+# todo empty config ?
