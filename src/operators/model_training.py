@@ -14,7 +14,11 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 class ModelTraining(Operator):
     needed_params = [
+        # mlflow_run params
         'experiment',
+        'run_name',
+
+        # run params
         'model_cfg',
         'compiler',
         ('input_shape', 'image_height'),

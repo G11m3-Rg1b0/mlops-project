@@ -1,12 +1,13 @@
 import tensorflow as tf
 from typing import List
 
+
 # todo add custom layers
 
 class CNNModel(tf.keras.Model):
 
     def __init__(self, config: List[dict]):
-        super(CNNModel, self).__init__()
+        super().__init__()
         self.model_cfg = config
 
         self.model_layers = []
