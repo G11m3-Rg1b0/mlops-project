@@ -1,8 +1,8 @@
 base:
-  dir_raw_data: data\raw
-  dir_prepared_data: data\prepared
-  dir_split_data: data\split
-  dir_preprocessed_data: data\preprocessed
+  dir_raw_data: data/raw
+  dir_prepared_data: data/prepared
+  dir_split_data: data/split
+  dir_preprocessed_data: data/preprocessed
 
   local_model_registry: mlruns
-  mlflow_last_run_info: configs\mlflow_last_run_info.yaml
+  mlflow_last_run_info: configs/mlflow_last_run_info.yaml

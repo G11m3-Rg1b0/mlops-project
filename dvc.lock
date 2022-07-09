@@ -1,36 +1,36 @@
 schema: '2.0'
 stages:
   data_preparation:
-    cmd: py -m src.operators.data_preparation --config=params.yaml --input-dir=data\raw
-      --output-dir=data\prepared
+    cmd: python -m src.operators.data_preparation --config-path=params.yaml --input-dir=data/raw
+      --output-dir=data/prepared
     deps:
-    - path: data\raw
+    - path: data/raw
       md5: 63aecd37950ec75d992549d925068acd.dir
       size: 412284
       nfiles: 50
-    - path: src\operators\data_preparation.py
-      md5: c4cdf8ffd005ed1ca9c0a705b3910c02
-      size: 1428
+    - path: src/operators/data_preparation.py
+      md5: d7cacec92cc2771117cc9a30dfbd5416
+      size: 1499
     params:
       params.yaml:
         data_preparation:
           data_formatter: PngFormatter
     outs:
-    - path: data\prepared
-      md5: 72bcb1e643859ea2c62bcd12c9eb9c27.dir
-      size: 7645904
+    - path: data/prepared
+      md5: 92364ada2547a348825f5d95138c561f.dir
+      size: 7649214
       nfiles: 50
   data_splitting:
-    cmd: py -m src.operators.data_splitting --config=params.yaml --input-dir=data\prepared
-      --output-dir=data\split
+    cmd: python -m src.operators.data_splitting --config-path=params.yaml --input-dir=data/prepared
+      --output-dir=data/split
     deps:
-    - path: data\prepared
-      md5: 72bcb1e643859ea2c62bcd12c9eb9c27.dir
-      size: 7645904
+    - path: data/prepared
+      md5: 92364ada2547a348825f5d95138c561f.dir
+      size: 7649214
       nfiles: 50
-    - path: src\operators\data_splitting.py
-      md5: cbaa52f909473ab0a66de449edc519d9
-      size: 1753
+    - path: src/operators/data_splitting.py
+      md5: f8e3a7616739aa74893c9c9c1f409a81
+      size: 1758
     params:
       params.yaml:
         data_splitting:
@@ -44,21 +44,21 @@ stages:
           valid_seed: 42
           validation_split: 0.2
     outs:
-    - path: data\split
-      md5: c0a6909f57b4b6b31418d8b775dbbed4.dir
-      size: 39322214
+    - path: data/split
+      md5: 8307966df600276da9a111ce0e66a20a.dir
+      size: 39322212
       nfiles: 6
   data_valid_preprocessing:
-    cmd: py -m src.operators.data_valid_preprocessing --config=params.yaml --input-dir=data\split
-      --output-dir=data\preprocessed
+    cmd: python -m src.operators.data_valid_preprocessing --config-path=params.yaml
+      --input-dir=data/split --output-dir=data/preprocessed
     deps:
-    - path: data\split\valid
-      md5: 8409ca8787d1cf4ec3b7e0b9db0ed256.dir
+    - path: data/split/valid
+      md5: 983ae3f286ac169765d963ad99b8f98f.dir
       size: 7864532
       nfiles: 3
-    - path: src\operators\data_valid_preprocessing.py
-      md5: 945d6b62b1644940a775cac0ff8d9cdc
-      size: 1611
+    - path: src/operators/data_valid_preprocessing.py
+      md5: b97a8ce06afe9c46b437ecac56edb75a
+      size: 1616
     params:
       params.yaml:
         data_valid_preprocessing:
@@ -66,34 +66,34 @@ stages:
           - name: Rescaling
             scale: 0.00392156862745098
     outs:
-    - path: data\preprocessed\valid
-      md5: e8a13ccb4a09a602a97ee8953a854d50.dir
-      size: 7864531
+    - path: data/preprocessed/valid
+      md5: dd0dee9c331d2613e667d3826df1a30c.dir
+      size: 7864532
       nfiles: 3
   data_train_preprocessing:
-    cmd: py -m src.operators.data_train_preprocessing --config=params.yaml --input-dir=data\split
-      --output-dir=data\preprocessed
+    cmd: python -m src.operators.data_train_preprocessing --config-path=params.yaml
+      --input-dir=data/split --output-dir=data/preprocessed
     deps:
-    - path: data\split\train
-      md5: 9e2aa12ec9764bd85a7eb9af877cb523.dir
-      size: 31457682
+    - path: data/split/train
+      md5: 8523680319625b3cfd2fe18b9103a134.dir
+      size: 31457680
       nfiles: 3
-    - path: src\operators\data_train_preprocessing.py
-      md5: a847225ed5a39a52af3d417ee41a78ab
-      size: 1548
+    - path: src/operators/data_train_preprocessing.py
+      md5: 00668e214ffefa3576a9620a19ac2427
+      size: 1553
     params:
       params.yaml:
         data_train_preprocessing:
           transformations:
           - name: Rescaling
             scale: 0.00392156862745098
-          - mode: horizontal_and_vertical
-            name: RandomFlip
-          - factor: 0.2
-            name: RandomRotation
+          - name: RandomFlip
+            mode: horizontal_and_vertical
+          - name: RandomRotation
+            factor: 0.2
     outs:
-    - path: data\preprocessed\train
-      md5: 429857677a45364df03b639505d608eb.dir
+    - path: data/preprocessed/train
+      md5: 5f99e4d417a139f3c0a6920e3d4cae55.dir
       size: 31457682
       nfiles: 3
   model_training:

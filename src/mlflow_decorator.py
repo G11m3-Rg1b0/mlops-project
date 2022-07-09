@@ -67,7 +67,7 @@ def __setup_mlflow() -> str:
         Experiment id for the upcoming run.
     """
     # setting tracking uri
-    mlflow.set_tracking_uri('http://localhost:5000')
+    mlflow.set_tracking_uri('http://localhost:1024')
 
     # setting autologging for the run
     mlflow.keras.autolog()
