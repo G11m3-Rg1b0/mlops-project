@@ -5,6 +5,12 @@ import dvc.api
 from mlflow.tracking.fluent import ActiveRun
 from src.utils import save_run_info, get_base_config, get_params_config
 
+## debugging
+# from mlflow.utils.autologging_utils import _logger
+# _logger.setLevel('DEBUG')
+
+
+# todo: should be in the init file (constants and maybe params too)cd
 # CONSTANTS
 base_config = get_base_config()
 data_train_dir = os.path.join(base_config['dir_preprocessed_data'], 'train')
