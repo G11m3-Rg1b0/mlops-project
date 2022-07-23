@@ -29,7 +29,7 @@ services:
     command: [
       'mlflow', 'server', '--host', '0.0.0.0',
       '--backend-store-uri', 'postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}',
-      '--default-artifact-root', 'file://${PWD}/mlruns'
+      '--default-artifact-root', ' ./mlruns'
     ]
     depends_on:
       db:
