@@ -43,7 +43,7 @@ To start the remote server in project directory use the command:
 ```bash
     source server.sh start
 ```
-this will launch the containers that will record the experiments.
+this will launch the containers that will record the experiments. The server will listen to the port `1024` of the localhost.
 Make sure to have your docker service up and running before starting the server.
 To stop the server simply modify the argument from `start` to `stop`.
 
