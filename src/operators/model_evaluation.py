@@ -3,7 +3,12 @@ from pathlib import Path
 
 from src.operator import Operator
 from src.parser import OpParser
-from src.utils import DatasetManager, check_config, mlflow_keras_load_model
+from src.utils import (
+    DatasetManager,
+    check_config,
+    mlflow_keras_load_model,
+    save_evaluation_results
+)
 
 # quiet tensorflow warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -29,9 +34,7 @@ class ModelEvaluation(Operator):
 
         outputs = model.evaluate(valid_dataset, verbose=1, batch_size=self.config['batch_size'])
 
-        names = model.metrics_names
-        for v, n in zip(outputs, names):
-            print('{}: {:.6f}'.format(n, v))
+        save_evaluation_results(outputs, model.metrics_names)
 
 
 if __name__ == '__main__':

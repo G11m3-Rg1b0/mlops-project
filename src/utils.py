@@ -48,6 +48,13 @@ def get_base_config() -> dict:
     return base_config['base']
 
 
+def get_info_path() -> str:
+    """Get the last run info path.
+    """
+    base_cfg = get_base_config()
+    return base_cfg['mlflow_last_run_info']
+
+
 def get_params_config() -> dict:
     """Load dvc's parameter file 'params.yaml'.
     """
@@ -60,8 +67,7 @@ def get_params_config() -> dict:
 def get_path_to_last_model() -> str:
     """Get the saving path of the last model run with mlflow.
     """
-    base_cfg = get_base_config()
-    info_path = base_cfg['mlflow_last_run_info']
+    info_path = get_info_path()
 
     assert os.path.exists(info_path), f"can't gather information from last run, {info_path} does not exist"
     with open(info_path, 'r') as fp:
@@ -85,16 +91,39 @@ def save_run_info(run_id: str, exp_id: str, artifact_uri: str) -> None:
     """Update 'mlflow_last_run_info' configuration file with experiment id, training run id and artifact uri for
     upcoming evaluations.
     """
-    base_cfg = get_base_config()
-    run_info_path = base_cfg['mlflow_last_run_info']
+    run_info_path = get_info_path()
 
     info = {
-        'run_id':        run_id,
+        'run_id': run_id,
         'experiment_id': exp_id,
-        'artifact_uri':  artifact_uri
+        'artifact_uri': artifact_uri
     }
     with open(run_info_path, 'w') as fp:
         yaml.safe_dump(info, fp)
+
+
+def save_evaluation_results(outputs: list, names: list) -> None:
+    """Save metrics of model's evaluation from last run into artifact repository.
+    """
+    run_info = get_last_run_info()
+
+    with open(f'{run_info["artifact_uri"]}/evaluation.txt', 'w') as fp:
+        text = []
+        for v, n in zip(outputs, names):
+            line = '{}: {:.6f}\n'.format(n, v)
+            print(line)
+            text.append(line)
+        fp.writelines(text)
+
+
+def get_last_run_info() -> dict:
+    """Load last run info.
+    """
+    run_info_path = get_info_path()
+    with open(run_info_path, 'r') as fp:
+        run_info = yaml.safe_load(fp)
+
+    return run_info
 
 
 ### Checks ###
@@ -120,7 +149,7 @@ def check_config(config: dict, needed_keys: List[tuple or str]) -> None:
 
 
 def check_data_formatter(data_formatter: str) -> None:
-    """Test if module prepare has the data_formatter requested for the preparation operation
+    """Test if prepare module has the data_formatter requested for the preparation operation
 
     args:
         data_formatter: The formatter used in the preparation.
@@ -133,7 +162,7 @@ def check_data_formatter(data_formatter: str) -> None:
 
 
 def check_transformations(transformations):
-    """Test if module preprocessing has the transformations requested for the preprocessing operation
+    """Test if preprocessing module has the transformations requested for the preprocessing operation
 
     args:
         transformations: The list of transformations to be used in preprocessing operation.
